@@ -1,0 +1,29 @@
+﻿<Window x:Class="Homework10.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Homework10"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="287*"/>
+            <ColumnDefinition Width="505*"/>
+        </Grid.ColumnDefinitions>
+        <ListBox x:Name ="userList" HorizontalAlignment="Left" Height="400" Margin="10,10,0,0" 
+                 VerticalAlignment="Top" Width="181">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Nick}"/>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+        <ListBox HorizontalAlignment="Left" Height="304" Margin="196,10,0,0" 
+                 VerticalAlignment="Top" Width="586" Grid.ColumnSpan="2"
+                 ItemsSource="{Binding ElementName=userList, Path=SelectedItem.Messages}"/>
+        <TextBox x:Name ="txtBxSendMsg" HorizontalAlignment="Left" Height="61" Margin="197,319,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="585" Grid.ColumnSpan="2"/>
+        <Button x:Name ="btnSendMsg" Content="Отправить" HorizontalAlignment="Left" Height="25" Margin="196,385,0,0" VerticalAlignment="Top" Width="586" Grid.ColumnSpan="2"/>
+
+    </Grid>
+</Window>
