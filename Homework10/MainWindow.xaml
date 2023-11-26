@@ -5,25 +5,104 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Homework10"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800" Closed="Window_Closed">
     <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="10*"/>
+            <RowDefinition Height="3*"/>
+            <RowDefinition Height="40"/>
+        </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="287*"/>
-            <ColumnDefinition Width="505*"/>
+            <ColumnDefinition Width="1*"/>
+            <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
-        <ListBox x:Name ="userList" HorizontalAlignment="Left" Height="400" Margin="10,10,0,0" 
-                 VerticalAlignment="Top" Width="181">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <TextBlock Text="{Binding Nick}"/>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-        </ListBox>
-        <ListBox HorizontalAlignment="Left" Height="304" Margin="196,10,0,0" 
-                 VerticalAlignment="Top" Width="586" Grid.ColumnSpan="2"
-                 ItemsSource="{Binding ElementName=userList, Path=SelectedItem.Messages}"/>
-        <TextBox x:Name ="txtBxSendMsg" HorizontalAlignment="Left" Height="61" Margin="197,319,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="585" Grid.ColumnSpan="2"/>
-        <Button x:Name ="btnSendMsg" Content="Отправить" HorizontalAlignment="Left" Height="25" Margin="196,385,0,0" VerticalAlignment="Top" Width="586" Grid.ColumnSpan="2"/>
+        <Border
+            BorderBrush="Black"
+            Margin="2"
+            CornerRadius="3"
+            Padding="1"
+            BorderThickness="1"
+            Grid.RowSpan="3"
+            Grid.Column="0"
+            >
+
+            <ListBox x:Name ="userList"  
+                 Grid.Column="0" 
+                 Grid.RowSpan="3" 
+                 Margin="2">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Nick}"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Border>
+
+        <Border
+            BorderBrush="Black"
+            Margin="2"
+            CornerRadius="3"
+            Padding="1"
+            BorderThickness="1"
+            Grid.Column="1"
+            Grid.Row="0"
+            >
+            <ListBox Grid.Column="1" 
+                 Grid.Row="0"
+                 Margin="2" 
+                 ItemsSource="{Binding ElementName=userList, Path=SelectedItem.MessageLog}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="Black" Margin="3" BorderThickness="1" CornerRadius="5" Background="MediumSpringGreen">
+                            <StackPanel Margin="3">
+                                <TextBlock Text="{Binding FirstName}"
+                                           Margin="0"
+                                           FontSize="12"/>
+                                <TextBlock Text="{Binding Msg}"
+                                           Margin="0"
+                                           FontSize="14"/>
+                                <TextBlock Text="{Binding Time}"
+                                           Margin="3 0"
+                                           FontSize="10"
+                                           Foreground="Gray"
+                                           TextAlignment="Right"/>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </Border>
+        <Border
+            BorderBrush="Black"
+            Margin="2"
+            CornerRadius="3"
+            Padding="1"
+            BorderThickness="1"
+            Grid.Column="1"
+            Grid.Row="1"
+            >
+            <TextBox x:Name ="txtBxSendMsg" 
+                 Grid.Row="1" 
+                 Grid.Column="1"
+                 Margin="2" 
+                 TextWrapping="Wrap" 
+                 Text="" />
+        </Border>
+
+        <Border
+            BorderBrush="Black"
+            Margin="2"
+            CornerRadius="3"
+            Padding="1"
+            BorderThickness="1"
+            Grid.Column="1"
+            Grid.Row="2"
+            >
+            <Button x:Name ="btnSendMsg" 
+                Content="Отправить" 
+                Margin="2"
+                Grid.Row="2" Grid.Column="1"/>
+        </Border>
 
     </Grid>
 </Window>

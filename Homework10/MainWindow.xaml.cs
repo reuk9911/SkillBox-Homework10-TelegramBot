@@ -17,72 +17,60 @@ using Telegram.Bot.Types.InputFiles;
 using Telegram.Bot;
 using System.Net;
 using System.Net.Http;
-//using System.Threading;
+using Telegram.Bot.Types.Enums;
 using System.IO;
 using System.Diagnostics;
+using Newtonsoft.Json;
 
 namespace Homework10
 {
-    
+
     /// <summary>
     /// Логика взаимодействия для MainWindow.xaml
     /// </summary
     public partial class MainWindow : Window
     {
 
-        ObservableCollection<TelegramUser> Users;
-        TelegramBotClient bot;
+        MyBot Bot = new MyBot();
 
         public MainWindow()
         {
             InitializeComponent();
-            Users = new ObservableCollection<TelegramUser>();
-
-            userList.ItemsSource = Users; //установка источника данных
-
-            string token = "2129445094:AAEGP9HqkpXcvIRV5HY5Fy_Fbh508bKI-rk";
-            bot = new TelegramBotClient(token);
+            this.Dispatcher.Invoke(() =>
+            {
+                Bot.Start();
+                
+            });
+            userList.ItemsSource = Bot.Users; //установка источника данных
 
             //указываем допустимые протоколы
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | 
-                SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | 
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 |
+                SecurityProtocolType.Tls | SecurityProtocolType.Tls11 |
                 SecurityProtocolType.Tls12;
-            
-            
-            var me = bot.GetMeAsync().Result;
-            Debug.WriteLine($"Bot_Id: {me.Id} \nBot_Name: {me.FirstName} ");
 
-            bot.OnMessage += delegate (object sender, Telegram.Bot.Args.MessageEventArgs e)
+            btnSendMsg.Click += delegate 
             {
-                string msg = $"{DateTime.Now}: {e.Message.Chat.FirstName} {e.Message.Chat.Id} {e.Message.Text}";
-                File.AppendAllText("data.log", $"{msg}\n");
-                Debug.WriteLine(msg);
-
-                this.Dispatcher.Invoke(() =>
-                {
-                    var person = new TelegramUser(e.Message.Chat.FirstName, e.Message.Chat.Id);
-                    if (!Users.Contains(person)) Users.Add(person);
-                    Users[Users.IndexOf(person)].AddMessage($"{person.Nick}: {e.Message.Text}");
-                });
+                Bot.SupportSendMsg(userList.SelectedItem as TelegramUser, txtBxSendMsg.Text);
+                txtBxSendMsg.Text = String.Empty;
             };
-            bot.StartReceiving();
-            btnSendMsg.Click += delegate {SendMsg(); };
-            txtBxSendMsg.KeyDown += (s, e) => { if (e.Key == Key.Return) { SendMsg(); } };
+
+            txtBxSendMsg.KeyDown += (s, e) => 
+            {
+                if (e.Key == Key.Return) 
+                {
+                    Bot.SupportSendMsg(userList.SelectedItem as TelegramUser, txtBxSendMsg.Text);
+                    txtBxSendMsg.Text = String.Empty;
+                }
+            };
         }
 
-        /// <summary>
-        /// Отправка сообщения
-        /// </summary>
-        public void SendMsg()
+        
+
+        private void Window_Closed(object sender, EventArgs e)
         {
-            var concreteUser = Users[Users.IndexOf(userList.SelectedItem as TelegramUser)];
-            string responseMsg = $"Support: {txtBxSendMsg.Text}";
-            concreteUser.Messages.Add(responseMsg);
-            
-            bot.SendTextMessageAsync(concreteUser.Id, txtBxSendMsg.Text);
-            string logText = $"{DateTime.Now}: >> {concreteUser.Nick} {concreteUser.Id} {responseMsg}";
-            File.AppendAllText("data.log", logText);
-            txtBxSendMsg.Text = String.Empty;
+            Bot.SerializeJson("");
         }
     }
+
+
 }
