@@ -8,6 +8,7 @@ using System.IO;
 using System.ComponentModel;
 using System.Collections.ObjectModel;
 using Newtonsoft.Json;
+using System.Text.RegularExpressions;
 
 namespace Homework10
 {
@@ -58,8 +59,11 @@ namespace Homework10
         public void AddMessage(string Time, long Id, string FirstName, string Msg) 
         {
             Message msg = new Message(Time, Id, FirstName, Msg);
-            
-            MessageLog.Add(msg); 
+            App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
+            {
+                MessageLog.Add(msg);
+            });
+             
         }
 
         /// <summary>

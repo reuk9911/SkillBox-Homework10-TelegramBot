@@ -13,6 +13,8 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Diagnostics;
 using Telegram.Bot.Args;
+using System.Text.RegularExpressions;
+using System.Linq.Expressions;
 
 namespace Homework10
 {
@@ -53,7 +55,11 @@ namespace Homework10
                     {
                         var person = new TelegramUser(e.Message.Chat.FirstName, e.Message.Chat.Id);
                         if (!Users.Contains(person))
-                            Users.Add(person);
+                            //Users.Add(person);
+                            App.Current.Dispatcher.Invoke((Action)delegate // <--- HERE
+                            {
+                                Users.Add(person);
+                            });
                         Users[Users.IndexOf(person)].AddMessage
                              (DateTime.Now.ToString(), person.UserId, person.Nick, e.Message.Text);
 
@@ -78,7 +84,12 @@ namespace Homework10
                 case Telegram.Bot.Types.Enums.MessageType.Document:
                     {
                         var person = new TelegramUser(e.Message.Chat.FirstName, e.Message.Chat.Id);
-                        if (!Users.Contains(person)) Users.Add(person);
+                        if (!Users.Contains(person))
+                            //Users.Add(person);
+                            App.Current.Dispatcher.Invoke((Action)delegate 
+                            {
+                                Users.Add(person);
+                            });
 
                         DownloadFile(e.Message.Document.FileId, e.Message.Document.FileName);
                         BotSendMsg(e.Message.Chat.Id, "Получен новый документ");
@@ -88,7 +99,12 @@ namespace Homework10
                 case Telegram.Bot.Types.Enums.MessageType.Photo:
                     {
                         var person = new TelegramUser(e.Message.Chat.FirstName, e.Message.Chat.Id);
-                        if (!Users.Contains(person)) Users.Add(person);
+                        if (!Users.Contains(person))
+                            //Users.Add(person);
+                            App.Current.Dispatcher.Invoke((Action)delegate 
+                            {
+                                Users.Add(person);
+                            });
 
 
                         DownloadFile(e.Message.Photo[e.Message.Photo.Length - 1].FileId,
@@ -100,7 +116,12 @@ namespace Homework10
                 case Telegram.Bot.Types.Enums.MessageType.Audio:
                     {
                         var person = new TelegramUser(e.Message.Chat.FirstName, e.Message.Chat.Id);
-                        if (!Users.Contains(person)) Users.Add(person);
+                        if (!Users.Contains(person))
+                            //Users.Add(person);
+                            App.Current.Dispatcher.Invoke((Action)delegate 
+                            {
+                                Users.Add(person);
+                            });
 
                         DownloadFile(e.Message.Audio.FileId, $"{e.Message.Audio.FileName}");
                         BotSendMsg(e.Message.Chat.Id, "Получено новое аудио");
@@ -240,11 +261,19 @@ namespace Homework10
         /// <param name="path">Путь для загрузки</param>
         private async void DownloadFile(string fileId, string path)
         {
-            var file = await Bot.GetFileAsync(fileId);
-            FileStream fs = new FileStream(path, FileMode.Create);
-            await Bot.DownloadFileAsync(file.FilePath, fs);
-            fs.Close();
-            fs.Dispose();
+            try
+            {
+                var file = await Bot.GetFileAsync(fileId);
+                FileStream fs = new FileStream(path, FileMode.Create);
+                await Bot.DownloadFileAsync(file.FilePath, fs);
+                fs.Close();
+                fs.Dispose();
+            }
+            catch (Telegram.Bot.Exceptions.ApiRequestException)
+            {
+
+            }
+            
         }
 
         /// <summary>

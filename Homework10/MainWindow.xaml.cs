@@ -68,7 +68,7 @@ namespace Homework10
 
         private void Window_Closed(object sender, EventArgs e)
         {
-            Bot.SerializeJson("");
+            Bot.SerializeJson("MessageLog.txt");
         }
     }
 
